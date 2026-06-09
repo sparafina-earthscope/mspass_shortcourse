@@ -30,9 +30,13 @@ conda clean --all -f -y
 # Remove the big installer so we don't increase docker image size too much
 rm ${INSTALLER_PATH}
 
-# Remove the pip cache created as part of installing mambaforge
-rm -rf /root/.cache
+# Remove the pip cache created as part of installing mambaforge.
+# This runs as the unprivileged NB_USER, so the cache lives in the
+# user's home, not /root.
+rm -rf "${HOME}/.cache"
 
-chown -R $NB_USER:$NB_USER ${CONDA_DIR}
+# NOTE: no chown here. The installer now runs as NB_USER (who already
+# owns ${CONDA_DIR}), so an unprivileged chown would fail under `set -e`.
+# Ownership is handled in the Dockerfile.
 
 conda list -n root
