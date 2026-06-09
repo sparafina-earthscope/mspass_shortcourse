@@ -1,5 +1,5 @@
 # Inherit from a common base image
-FROM buildpack-deps:focal-scm
+FROM buildpack-deps:noble-scm
 
 ENV CONDA_DIR /opt/conda
 
