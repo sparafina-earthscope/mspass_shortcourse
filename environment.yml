@@ -9,7 +9,8 @@ dependencies:
 - nbgitpuller=1.1.*
 
 - jupyterlab
-- jupyterhub-singleuser>3.0,<4.0
+# - jupyterhub-singleuser>3.0,<4.0
+- jupyterhub-singleuser
 - jupyter-server-proxy
 
 - ipympl
