@@ -14,7 +14,7 @@ dependencies:
 
 - ipympl
 - pytest
-- mspasspy
+- mspasspy==2.3.3
 - pyarrow>14.0.1
 - pip
 - pip:
