@@ -11,7 +11,7 @@ INSTALLER_PATH=/tmp/mambaforge-installer.sh
 wget --quiet $URL -O ${INSTALLER_PATH}
 chmod +x ${INSTALLER_PATH}
 
-bash ${INSTALLER_PATH} -b -p ${CONDA_DIR}
+bash ${INSTALLER_PATH} -b -u -p ${CONDA_DIR}
 export PATH="${CONDA_DIR}/bin:$PATH"
 
 # Do not attempt to auto update conda or dependencies
