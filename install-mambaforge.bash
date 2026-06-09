@@ -11,7 +11,7 @@ INSTALLER_PATH=/tmp/mambaforge-installer.sh
 wget --quiet $URL -O ${INSTALLER_PATH}
 chmod +x ${INSTALLER_PATH}
 
-bash ${INSTALLER_PATH} -b -u -p ${CONDA_DIR}
+bash ${INSTALLER_PATH} -b -p ${CONDA_DIR}
 export PATH="${CONDA_DIR}/bin:$PATH"
 
 # Do not attempt to auto update conda or dependencies
@@ -31,12 +31,9 @@ conda clean --all -f -y
 rm ${INSTALLER_PATH}
 
 # Remove the pip cache created as part of installing mambaforge.
-# This runs as the unprivileged NB_USER, so the cache lives in the
-# user's home, not /root.
 rm -rf "${HOME}/.cache"
 
-# NOTE: no chown here. The installer now runs as NB_USER (who already
-# owns ${CONDA_DIR}), so an unprivileged chown would fail under `set -e`.
-# Ownership is handled in the Dockerfile.
+# NOTE: no chown here. Ownership of ${CONDA_DIR} is transferred to
+# NB_USER in the Dockerfile after this script runs as root.
 
 conda list -n root

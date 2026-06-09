@@ -116,29 +116,26 @@ RUN set -x \
 VOLUME /data/db /data/configdb
 
 
-# Create the conda directory owned by NB_USER so the user can install
-# packages into the environment at runtime (conda/mamba/pip).
-RUN mkdir -p ${CONDA_DIR} && \
-    chown -R ${NB_UID}:${NB_UID} ${CONDA_DIR}
+# Install mambaforge as root into a fresh ${CONDA_DIR}. Letting the
+# installer create the directory itself ensures the extracted binaries
+# (conda.exe, etc.) get the correct executable permissions.
+COPY install-mambaforge.bash /tmp/install-mambaforge.bash
+RUN chmod +x /tmp/install-mambaforge.bash && \
+    /tmp/install-mambaforge.bash
 
-# Install mambaforge as the unprivileged user so all files under
-# ${CONDA_DIR} are owned by NB_USER, not root.
-COPY --chown=${NB_UID}:${NB_UID} install-mambaforge.bash /tmp/install-mambaforge.bash
-RUN chmod +x /tmp/install-mambaforge.bash
-
-USER ${NB_USER}
-
-RUN /tmp/install-mambaforge.bash
-
-COPY --chown=${NB_UID}:${NB_UID} environment.yml /tmp/environment.yml
+COPY environment.yml /tmp/environment.yml
 
 RUN mamba env update -p ${CONDA_DIR} -f /tmp/environment.yml && \
     mamba clean --all --yes
 
-# Make sure the whole environment is owned and writable by NB_USER so
-# they can `conda install` / `pip install` additional packages at runtime.
+# Transfer ownership of the whole environment to NB_USER and make it
+# group-writable, so the user can `conda install` / `pip install`
+# additional packages into the environment at runtime.
 RUN chown -R ${NB_UID}:${NB_UID} ${CONDA_DIR} && \
     chmod -R g+w ${CONDA_DIR}
+
+USER ${NB_USER}
+WORKDIR /home/${NB_USER}
 
 EXPOSE 8888
 
