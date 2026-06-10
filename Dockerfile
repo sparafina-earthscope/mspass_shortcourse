@@ -115,6 +115,13 @@ RUN set -x \
 
 VOLUME /data/db /data/configdb
 
+# Install boost
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libboost-serialization1.85.0 \
+		libboost-system1.85.0 \ 
+		libboost-thread1.85.0 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install mambaforge as root into a fresh ${CONDA_DIR}. Letting the
 # installer create the directory itself ensures the extracted binaries

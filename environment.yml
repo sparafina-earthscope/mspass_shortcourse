@@ -13,7 +13,6 @@ dependencies:
 - jupyterhub-singleuser
 - jupyter-server-proxy
 
-- boost
 - ipympl
 - pytest
 - mspasspy==2.3.3
