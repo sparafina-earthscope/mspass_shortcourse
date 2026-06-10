@@ -25,8 +25,20 @@ RUN apt-get -qq update --yes && \
             mc \
             tini \
             build-essential \
-            libboost-all-dev \
+            g++ \
+            python3-dev \
+            wget \
             locales > /dev/null
+
+# Download and extract Boost 1.85.0
+WORKDIR /tmp
+RUN wget https://boost.io \
+    && tar -xzf boost_1_85_0.tar.gz
+
+# Bootstrap and build Boost
+WORKDIR /tmp/boost_1_85_0
+RUN ./bootstrap.sh --prefix=/usr/local \
+    && ./b2 --with-system --with-thread --with-filesystem -j$(nproc) install
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
