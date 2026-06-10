@@ -114,14 +114,6 @@ RUN set -x \
 
 VOLUME /data/db /data/configdb
 
-
-# Runtime shared libraries (e.g. Boost serialization, required by MsPASS).
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libboost-serialization1.85.0 \
-    && rm -rf /var/lib/apt/lists/*
-
-
 # Install mambaforge as root into a fresh ${CONDA_DIR}. Letting the
 # installer create the directory itself ensures the extracted binaries
 # (conda.exe, etc.) get the correct executable permissions.
