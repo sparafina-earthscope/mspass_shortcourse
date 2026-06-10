@@ -25,31 +25,7 @@ RUN apt-get -qq update --yes && \
             mc \
             tini \
             build-essential \
-            g++ \
-            python3-dev \
-            wget \
             locales > /dev/null
-
-# Build Boost 1.85.0 from source
-WORKDIR /tmp
-RUN wget -q https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz \
-        -O boost_1_85_0.tar.gz \
-    && tar -xzf boost_1_85_0.tar.gz \
-    && rm boost_1_85_0.tar.gz
-
-WORKDIR /tmp/boost_1_85_0
-RUN ./bootstrap.sh --prefix=/usr/local \
-        --with-libraries=system,thread,filesystem,serialization \
-    && ./b2 \
-        --with-system \
-        --with-thread \
-        --with-filesystem \
-        --with-serialization \
-        -j"$(nproc)" \
-        install \
-    && ldconfig \
-    && cd /tmp \
-    && rm -rf /tmp/boost_1_85_0
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
@@ -63,9 +39,8 @@ RUN apt-get update > /dev/null && \
             texlive-fonts-recommended \
             texlive-plain-generic > /dev/null
 
-#COPY ./srv ./srv
-#RUN mkdir ../srv
-RUN cd ./srv && git clone https://github.com/mspass-team/mspass.git
+RUN mkdir -p /srv && \
+    git clone https://github.com/mspass-team/mspass.git /srv/mspass
 
 USER ${NB_USER}
 WORKDIR /home/${NB_USER}
@@ -138,6 +113,14 @@ RUN set -x \
 	# && docker-clean
 
 VOLUME /data/db /data/configdb
+
+
+# Runtime shared libraries (e.g. Boost serialization, required by MsPASS).
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libboost-serialization1.85.0 \
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Install mambaforge as root into a fresh ${CONDA_DIR}. Letting the
 # installer create the directory itself ensures the extracted binaries
