@@ -1,6 +1,5 @@
 # Inherit from a common base image
-# FROM buildpack-deps:noble-scm
-FROM ghcr.io/seisscoped/container-base:ubuntu22.04_jupyterlab
+# FROM buildpack-deps:22.04-scm
 
 ENV CONDA_DIR /opt/conda
 
