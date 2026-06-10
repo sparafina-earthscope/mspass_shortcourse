@@ -25,6 +25,8 @@ RUN apt-get -qq update --yes && \
             mc \
             tini \
             build-essential \
+            libboost-dev \
+            libboost-serialization-dev \
             locales > /dev/null
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
