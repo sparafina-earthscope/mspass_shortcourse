@@ -51,8 +51,6 @@ RUN ./bootstrap.sh --prefix=/usr/local \
     && cd /tmp \
     && rm -rf /tmp/boost_1_85_0
 
-WORKDIR /tmp
-
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
