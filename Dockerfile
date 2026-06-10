@@ -30,15 +30,28 @@ RUN apt-get -qq update --yes && \
             wget \
             locales > /dev/null
 
-# Download and extract Boost 1.85.0
+# Build Boost 1.85.0 from source
 WORKDIR /tmp
-RUN wget https://boost.io \
-    && tar -xzf boost_1_85_0.tar.gz
+RUN wget -q https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz \
+        -O boost_1_85_0.tar.gz \
+    && tar -xzf boost_1_85_0.tar.gz \
+    && rm boost_1_85_0.tar.gz
 
-# Bootstrap and build Boost
 WORKDIR /tmp/boost_1_85_0
 RUN ./bootstrap.sh --prefix=/usr/local \
-    && ./b2 --with-system --with-thread --with-filesystem -j$(nproc) install
+        --with-libraries=system,thread,filesystem,serialization \
+    && ./b2 \
+        --with-system \
+        --with-thread \
+        --with-filesystem \
+        --with-serialization \
+        -j"$(nproc)" \
+        install \
+    && ldconfig \
+    && cd /tmp \
+    && rm -rf /tmp/boost_1_85_0
+
+WORKDIR /tmp
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
