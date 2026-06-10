@@ -1,5 +1,5 @@
 # Inherit from a common base image
-# FROM buildpack-deps:jammy-scm
+FROM buildpack-deps:jammy-scm
 
 ENV CONDA_DIR /opt/conda
 
